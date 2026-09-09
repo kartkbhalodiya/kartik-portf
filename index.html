@@ -39,7 +39,7 @@ h2 .ic{width:1.25em;height:1.25em;vertical-align:-0.28em;margin-right:.15em}
 .btn:hover{background:var(--y)}
 .board{position:relative;margin-top:16px;display:grid;grid-template-columns:repeat(12,1fr);gap:18px;align-items:start}
 /* note base */
-.note{position:relative;padding:20px 18px 16px;box-shadow:0 10px 18px rgba(0,0,0,.28);transition:transform .2s;min-width:0}
+.note{position:relative;padding:20px 18px 16px;box-shadow:0 10px 18px rgba(0,0,0,.28);transition:transform .2s;min-width:0;touch-action:pan-y}
 .note:hover{transform:scale(1.015) rotate(0deg)!important;z-index:5}
 .note.dragging{box-shadow:0 18px 30px rgba(0,0,0,.4);z-index:20;cursor:grabbing}
 .pin3d{position:absolute;top:-22px;left:46%;width:28px;transform:translateX(-50%) rotate(-8deg);z-index:3;pointer-events:none}
@@ -329,7 +329,7 @@ function toast(m){var t=document.getElementById('toast');t.textContent=m;t.class
 // drag notes (pointer, transform offsets)
 document.querySelectorAll('.drag').forEach(function(el){
   var sx=0,sy=0,dx=0,dy=0,drag=false;
-  el.addEventListener('pointerdown',function(e){var t=e.target;if(t.closest&&t.closest('a,button,input,textarea,select'))return;drag=true;sx=e.clientX-dx;sy=e.clientY-dy;el.classList.add('dragging');try{el.setPointerCapture(e.pointerId);}catch(_){}});
+  el.addEventListener('pointerdown',function(e){if(e.pointerType==='touch')return;var t=e.target;if(t.closest&&t.closest('a,button,input,textarea,select'))return;drag=true;sx=e.clientX-dx;sy=e.clientY-dy;el.classList.add('dragging');try{el.setPointerCapture(e.pointerId);}catch(_){}});
   el.addEventListener('pointermove',function(e){if(!drag)return;dx=e.clientX-sx;dy=e.clientY-sy;el.style.translate=dx+'px '+dy+'px';});
   ['pointerup','pointercancel'].forEach(function(ev){el.addEventListener(ev,function(){drag=false;el.classList.remove('dragging');});});
 });
