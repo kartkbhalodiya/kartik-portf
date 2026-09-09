@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kartik's Wall — Pinned Portfolio</title>
+<meta name="description" content="Kartik Bhalodiya — Full Stack Engineer. A pinboard portfolio. MERN, Python, AI, Flutter.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#2b2620; --mut:#7a6f5d;
+  --y:#fff3a3; --p:#ffd9e3; --g:#d9f5c4; --b:#d2e9ff; --o:#ffe3bd; --w:#fffdf4;
+  --red:#d33a2c;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Segoe Print","Comic Sans MS","Chalkboard SE",cursive;
+  color:var(--ink);min-height:100vh;padding:18px 12px 60px;
+  background-color:#cfa878;
+  background-image:radial-gradient(rgba(90,60,20,.16) 1.5px,transparent 1.6px),radial-gradient(rgba(255,255,255,.25) 1px,transparent 1.2px);
+  background-size:14px 14px,9px 9px;background-position:0 0,7px 5px;
+}
+::selection{background:var(--red);color:#fff}
+.wrap{max-width:1160px;margin:0 auto}
+/* sketchy hand-drawn icons */
+.ic{width:1.1em;height:1.1em;vertical-align:-0.2em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+h2 .ic{width:1.25em;height:1.25em;vertical-align:-0.28em;margin-right:.15em}
+.logomark{width:1.2em;height:1.2em;vertical-align:-0.24em;fill:currentColor;flex-shrink:0}
+.logomark.li{color:#0a66c2}
+.logomark.gh{color:#161414}
+/* wooden header */
+.header{background:linear-gradient(180deg,#8a5a2b,#6f421e);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;color:#ffe9c4;box-shadow:0 6px 0 rgba(0,0,0,.25);flex-wrap:wrap;position:relative}
+.header::after{content:"";position:absolute;inset:5px;border:1.5px dashed rgba(255,233,196,.5);border-radius:9px;pointer-events:none}
+.header h1{font-size:clamp(20px,3vw,30px);letter-spacing:.02em}
+.header h1 small{display:block;font-family:Arial;font-size:10px;letter-spacing:.34em;color:#ffd98a}
+.header .meta{margin-left:auto;font-family:Arial;font-size:11px;letter-spacing:.12em;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nail{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#999 45%,#333 80%);box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.btn{font-family:Arial;font-weight:800;font-size:11px;letter-spacing:.1em;border:2px solid #2b2620;background:var(--w);padding:9px 14px;cursor:pointer;box-shadow:3px 3px 0 #2b2620;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{background:var(--y)}
+.board{position:relative;margin-top:16px;display:grid;grid-template-columns:repeat(12,1fr);gap:18px;align-items:start}
+/* note base */
+.note{position:relative;padding:20px 18px 16px;box-shadow:0 10px 18px rgba(0,0,0,.28);transition:transform .2s;min-width:0}
+.note:hover{transform:scale(1.015) rotate(0deg)!important;z-index:5}
+.note.dragging{box-shadow:0 18px 30px rgba(0,0,0,.4);z-index:20;cursor:grabbing}
+.pin3d{position:absolute;top:-22px;left:46%;width:28px;transform:translateX(-50%) rotate(-8deg);z-index:3;pointer-events:none}
+.pushpin{width:100%;height:auto;display:block;overflow:visible}
+.board .note:nth-child(even) .pin3d{left:54%;transform:translateX(-50%) rotate(7deg)}
+.tape{position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-4deg);width:110px;height:26px;background:rgba(255,255,255,.55);border-left:1px dashed rgba(0,0,0,.2);border-right:1px dashed rgba(0,0,0,.2);box-shadow:0 2px 3px rgba(0,0,0,.15)}
+.note h2{font-size:13px;font-family:Arial;letter-spacing:.26em;color:rgba(0,0,0,.55);margin-bottom:8px}
+.note h3{font-size:22px;line-height:1.15}
+.note p,.note li{font-size:14px;line-height:1.65}
+.string{position:relative}
+/* spans */
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s6{grid-column:span 6}.s4{grid-column:span 4}.s3{grid-column:span 3}
+@media(max-width:900px){.s8,.s6,.s4,.s3{grid-column:span 12}}
+/* specific notes */
+.hero{background:var(--w);transform:rotate(-.8deg)}
+.hero .idrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.polaroid{background:#fff;border:1px solid #ddd;padding:10px 10px 26px;width:170px;transform:rotate(-4deg);box-shadow:0 6px 12px rgba(0,0,0,.25);text-align:center}
+.polaroid .ph{height:150px;overflow:hidden;background:#0b2a4a}
+.polaroid .ph img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.polaroid small{font-family:Arial;font-size:10px;letter-spacing:.2em;color:var(--mut)}
+.hero h3{font-size:clamp(30px,4.6vw,48px)}
+.hero .roles{display:inline-block;background:var(--ink);color:#fff;font-family:Arial;font-size:11px;letter-spacing:.14em;padding:6px 12px;margin-top:8px}
+.contactline{margin-top:10px;font-size:13.5px;line-height:2}
+.contactline a{color:var(--ink);font-weight:700}
+.contactline .ic{color:var(--red)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.stats span{background:var(--y);border:1.5px solid var(--ink);font-family:Arial;font-weight:800;font-size:12px;padding:7px 12px;box-shadow:2px 2px 0 var(--ink)}
+.summary{background:#fffad1;transform:rotate(.7deg)}
+.summary p{text-align:left}
+.skills{display:contents}
+.skill{background:var(--y);min-height:150px}
+.skill:nth-child(2n){background:var(--p);transform:rotate(1.2deg)}
+.skill:nth-child(3n){background:var(--g);transform:rotate(-1.1deg)}
+.skill:nth-child(4n){background:var(--b);transform:rotate(.9deg)}
+.skill h4{font-family:Arial;font-size:11px;letter-spacing:.22em;border-bottom:1.5px dashed rgba(0,0,0,.3);padding-bottom:6px;margin-bottom:8px}
+.skill p{font-size:13px}
+.job{background:var(--w);transform:rotate(-.5deg)}
+.job:nth-child(2n){transform:rotate(.6deg)}
+.job .date{display:inline-block;font-family:Arial;font-size:10.5px;font-weight:800;letter-spacing:.14em;background:var(--ink);color:#fff;padding:5px 10px;margin:8px 0}
+.job ul{margin:8px 0 0 18px;display:grid;gap:6px}
+.env{background:#f3e9d2;background-image:repeating-linear-gradient(0deg,transparent,transparent 26px,rgba(43,38,32,.12) 26px,rgba(43,38,32,.12) 27px)}
+.proj{background:var(--o)}
+.proj.big{min-height:200px}
+.proj ul{margin:8px 0 0 18px;display:grid;gap:6px}
+.proj .stack{font-family:Arial;font-size:10.5px;letter-spacing:.12em;background:var(--red);color:#fff;display:inline-block;padding:4px 10px;margin:8px 0}
+.proj a{color:#144fc4;font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.proj a:hover{color:#0b2a6b}
+.searchnote{grid-column:span 12;display:flex;gap:10px;align-items:center;background:#fffdf4;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:0 6px 0 14px}
+.searchnote .sicon{display:grid;place-items:center;color:var(--mut)}
+.searchnote .sicon .ic{width:20px;height:20px}
+.searchnote input{flex:1;border:0;background:transparent;padding:12px 14px 12px 6px;font-family:inherit;font-size:14px;outline:none}
+.school{background:var(--b)}
+.sealrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.ribbon{background:#fff;border:2px solid var(--ink);border-radius:100px;padding:8px 16px;font-family:Arial;font-size:11.5px;font-weight:800;box-shadow:2px 2px 0 var(--ink);display:inline-flex;align-items:center;gap:8px}
+.langs{background:var(--g)}
+.langs .bubbles{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.langs .bubbles span{background:#fff;border:2px solid var(--ink);border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700}
+.contact{background:var(--p);text-align:left}
+.contact a.big{display:inline-flex;align-items:center;gap:8px;margin:8px 10px 0 0;background:var(--ink);color:#fff;text-decoration:none;font-family:Arial;font-weight:800;font-size:12px;letter-spacing:.06em;padding:12px 18px;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.contact a.big:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+.contact button.big{display:inline-flex;align-items:center;gap:8px;margin:8px 10px 0 0;background:var(--ink);color:#fff;border:0;cursor:pointer;font-family:Arial;font-weight:800;font-size:12px;letter-spacing:.06em;padding:12px 18px;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.contact button.big:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+/* resume unfold overlay */
+#resumeOverlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:center;padding:4vh 16px}
+#resumeOverlay.open{display:flex}
+.resume-backdrop{position:absolute;inset:0;background:rgba(24,16,8,.74)}
+.resume-sheet{position:relative;background:#fffdf4;border:2px solid var(--ink);box-shadow:10px 10px 0 rgba(0,0,0,.55);width:min(880px,100%);height:88vh;display:flex;flex-direction:column;transform-origin:top center}
+#resumeOverlay.open .resume-sheet{animation:sheetIn .45s ease-out}
+@keyframes sheetIn{0%{transform:scale(.96);opacity:0}100%{transform:scale(1);opacity:1}}
+.resume-body{position:relative;flex:1;min-height:0;overflow:hidden;background:#2a1f14}
+.door{position:absolute;left:0;right:0;height:51%;z-index:2;background-color:#4a3018;background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 2px,transparent 2px 74px),linear-gradient(180deg,#6b4423,#3d2712)}
+.door-top{top:0;border-bottom:4px solid #c9a227}
+.door-top::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:10px;background-image:radial-gradient(circle at 8px 5px,#e8c85a 3px,#7a5c10 4px,transparent 5px);background-size:26px 10px;background-repeat:repeat-x}
+.door-bottom{bottom:0;border-top:4px solid #c9a227}
+.door-bottom::before{content:"";position:absolute;left:0;right:0;top:6px;height:10px;background-image:radial-gradient(circle at 8px 5px,#e8c85a 3px,#7a5c10 4px,transparent 5px);background-size:26px 10px;background-repeat:repeat-x}
+#resumeOverlay.open .door-top{animation:doorUp .85s cubic-bezier(.6,0,.3,1) .6s forwards}
+#resumeOverlay.open .door-bottom{animation:doorDown .85s cubic-bezier(.6,0,.3,1) .6s forwards}
+@keyframes doorUp{0%{transform:translateY(0)}100%{transform:translateY(-104%)}}
+@keyframes doorDown{0%{transform:translateY(0)}100%{transform:translateY(104%)}}
+.seal{position:absolute;top:50%;left:50%;width:104px;height:104px;margin:-52px 0 0 -52px;z-index:3;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0574b,#a3160c 60%,#5f0b05);border:3px dashed rgba(255,220,180,.75);box-shadow:0 6px 16px rgba(0,0,0,.6),inset 0 2px 6px rgba(255,255,255,.35),inset 0 -4px 8px rgba(0,0,0,.5);display:grid;place-items:center;color:#ffe9c9;font-family:Arial;font-weight:900;font-size:30px}
+.seal small{position:absolute;bottom:13px;font-size:8px;letter-spacing:.3em}
+#resumeOverlay.open .seal{animation:sealBreak .65s ease-in forwards}
+@keyframes sealBreak{0%{transform:scale(1) rotate(0);opacity:1}30%{transform:scale(1.12) rotate(-10deg);opacity:1}100%{transform:scale(1.7) rotate(170deg);opacity:0}}
+.resume-tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);width:150px;height:28px;background:rgba(255,255,255,.6);border-left:1px dashed rgba(0,0,0,.25);border-right:1px dashed rgba(0,0,0,.25);box-shadow:0 2px 3px rgba(0,0,0,.2)}
+.resume-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:2px solid var(--ink);background:var(--y);font-family:Arial;font-size:11px;font-weight:800;letter-spacing:.18em;flex-wrap:wrap}
+.resume-head .rtools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.rbtn{font-family:Arial;font-weight:800;font-size:11px;letter-spacing:.1em;border:2px solid var(--ink);background:#fff;color:var(--ink);text-decoration:none;padding:8px 14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);display:inline-flex;align-items:center;gap:7px}
+.rbtn.hot{background:var(--red);color:#fff}
+.rbtn:hover{transform:translate(-1px,-1px)}
+.resume-doc{flex:1;width:100%;border:0;background:#fff;min-height:0}
+.resume-paper{position:absolute;inset:0;overflow-y:auto;background:#fff;padding:26px 30px 34px;font-family:Arial,Helvetica,sans-serif;color:#111;z-index:1}
+.resume-paper h4{text-align:center;font-size:20px;letter-spacing:.04em}
+.resume-paper .rp-sub{text-align:center;font-size:11px;line-height:1.7;color:#111;margin:6px 0 4px}
+.resume-paper .rp-sub a{color:#0b3fa5}
+.resume-paper h5{font-size:12px;letter-spacing:.06em;border-top:1px solid #111;border-bottom:1px solid #111;padding:4px 0;margin:14px 0 6px}
+.resume-paper p{font-size:12px;line-height:1.6;margin:4px 0}
+.resume-paper p span{color:#444;font-size:11px}
+.resume-paper ul{margin:4px 0 4px 18px;font-size:12px;line-height:1.6}
+.resume-paper a{color:#0b3fa5}
+.resume-fallback{font-family:Arial;font-size:11px;letter-spacing:.04em;color:#5c554b;background:#fff4d6;border-bottom:1.5px dashed var(--ink);padding:7px 16px}
+.resume-fallback b{color:var(--ink)}
+.hint{font-family:Arial;font-size:10.5px;letter-spacing:.2em;color:#fffdf4;background:rgba(0,0,0,.35);display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;margin-top:14px}
+.foot{text-align:center;color:#fff8;font-family:Arial;font-size:11px;letter-spacing:.14em;margin-top:16px}
+.tools{position:fixed;bottom:16px;right:16px;display:flex;gap:8px;z-index:60}
+#toast{position:fixed;bottom:70px;right:16px;background:var(--ink);color:#fff;font-family:Arial;font-size:12px;padding:11px 16px;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<!-- hand-sketched sticky-note icon set -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5.5 3.5h3.4l1.7 4.6-2.2 1.6a12.5 12.5 0 0 0 5.9 5.9l1.6-2.2 4.6 1.7v3.4a2 2 0 0 1-2.1 2A16.5 16.5 0 0 1 3.5 5.6a2 2 0 0 1 2-2.1z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5 12 13l8.5-5.5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4.4l2.8-2.8a4.5 4.5 0 0 0-6.4-6.4l-1.6 1.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4-.4l-2.8 2.8a4.5 4.5 0 0 0 6.4 6.4l1.6-1.6"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M9.5 20.5h5M12 16.5v4"/></symbol>
+    <symbol id="i-brief" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M9 8V6.2A1.7 1.7 0 0 1 10.7 4.5h2.6a1.7 1.7 0 0 1 1.7 1.7V8M3 13.5h18"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h3.6l2 2.2H19A1.5 1.5 0 0 1 20.5 9.7V18A1.5 1.5 0 0 1 19 19.5H5A1.5 1.5 0 0 1 3.5 18z"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M2.5 9.2 12 4.5l9.5 4.7L12 13.7z"/><path d="M6.5 11.4v3.8c0 1.4 2.5 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-3.8M21.5 9.2v5.3"/></symbol>
+    <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M9.2 13.2 7 20.5l5-2.8 5 2.8-2.2-7.3M10.2 9l1.3 1.3 2.3-2.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H9.5L4 20z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.8 3.4 2.8 13.6 0 17M12 3.5c-2.8 3.4-2.8 13.6 0 17"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 20.5 20.5"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><rect x="7" y="14.5" width="10" height="6"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3.5 7H7l9.5 9.5H20"/><path d="M3.5 17H7l2.2-2.2M14.3 11.3 16.5 9H20"/><path d="M17.5 6.5 20 9l-2.5 2.5M17.5 14 20 16.5 17.5 19"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2.5v19M2.5 12h19"/><path d="M12 2.5 9.5 5M12 2.5 14.5 5M12 21.5 9.5 19M12 21.5l2.5-2.5M2.5 12 5 9.5M2.5 12 5 14.5M21.5 12 19 9.5M21.5 12 19 14.5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z"/></symbol>
+    <symbol id="i-logo-li" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+    <symbol id="i-logo-gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+    <linearGradient id="pp-steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7c828a"/><stop offset=".45" stop-color="#f2f5f8"/><stop offset="1" stop-color="#8b9097"/></linearGradient>
+    <radialGradient id="pp-hr" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#ffb3a6"/><stop offset=".55" stop-color="#d33a2c"/><stop offset="1" stop-color="#7a1408"/></radialGradient>
+    <linearGradient id="pp-br" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1408"/><stop offset=".35" stop-color="#d33a2c"/><stop offset=".5" stop-color="#ff9a8a"/><stop offset=".65" stop-color="#d33a2c"/><stop offset="1" stop-color="#7a1408"/></linearGradient>
+    <linearGradient id="pp-sr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a8a"/><stop offset=".5" stop-color="#d33a2c"/><stop offset="1" stop-color="#7a1408"/></linearGradient>
+    <radialGradient id="pp-hb" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#c9dbff"/><stop offset=".55" stop-color="#2f6fed"/><stop offset="1" stop-color="#0b2a6b"/></radialGradient>
+    <linearGradient id="pp-bb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b2a6b"/><stop offset=".35" stop-color="#2f6fed"/><stop offset=".5" stop-color="#a9c6ff"/><stop offset=".65" stop-color="#2f6fed"/><stop offset="1" stop-color="#0b2a6b"/></linearGradient>
+    <linearGradient id="pp-sb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9c6ff"/><stop offset=".5" stop-color="#2f6fed"/><stop offset="1" stop-color="#0b2a6b"/></linearGradient>
+    <radialGradient id="pp-hg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#c4f0d4"/><stop offset=".55" stop-color="#22b45e"/><stop offset="1" stop-color="#06451f"/></radialGradient>
+    <linearGradient id="pp-bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#06451f"/><stop offset=".35" stop-color="#22b45e"/><stop offset=".5" stop-color="#a5ecbf"/><stop offset=".65" stop-color="#22b45e"/><stop offset="1" stop-color="#06451f"/></linearGradient>
+    <linearGradient id="pp-sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a5ecbf"/><stop offset=".5" stop-color="#22b45e"/><stop offset="1" stop-color="#06451f"/></linearGradient>
+    <radialGradient id="pp-hy" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#ffedb8"/><stop offset=".55" stop-color="#f2b90d"/><stop offset="1" stop-color="#713f12"/></radialGradient>
+    <linearGradient id="pp-by" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#713f12"/><stop offset=".35" stop-color="#f2b90d"/><stop offset=".5" stop-color="#ffe9a8"/><stop offset=".65" stop-color="#f2b90d"/><stop offset="1" stop-color="#713f12"/></linearGradient>
+    <linearGradient id="pp-sy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset=".5" stop-color="#f2b90d"/><stop offset="1" stop-color="#713f12"/></linearGradient>
+    <symbol id="i-pp-r" viewBox="0 0 60 84"><ellipse cx="27" cy="77" rx="16" ry="4" fill="#000" opacity=".28"/><path d="M28.6 56l-.7 21h4.2l-.7-21z" fill="url(#pp-steel)"/><path d="M21 22c-.5 12-1.5 24-3.5 34 4 3.4 8.5 5 12.5 5s8.5-1.6 12.5-5c-2-10-3-22-3.5-34z" fill="url(#pp-br)"/><path d="M24 25c-.4 10-1.2 20-2.3 28" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5" fill="none"/><ellipse cx="30" cy="59" rx="17" ry="8" fill="url(#pp-sr)"/><ellipse cx="30" cy="56.6" rx="12.5" ry="4.4" fill="#fff" opacity=".28"/><ellipse cx="30" cy="15" rx="20" ry="12" fill="url(#pp-hr)"/><ellipse cx="22.5" cy="10.8" rx="7" ry="3.4" fill="#fff" opacity=".85" transform="rotate(-12 22.5 10.8)"/></symbol>
+    <symbol id="i-pp-b" viewBox="0 0 60 84"><ellipse cx="27" cy="77" rx="16" ry="4" fill="#000" opacity=".28"/><path d="M28.6 56l-.7 21h4.2l-.7-21z" fill="url(#pp-steel)"/><path d="M21 22c-.5 12-1.5 24-3.5 34 4 3.4 8.5 5 12.5 5s8.5-1.6 12.5-5c-2-10-3-22-3.5-34z" fill="url(#pp-bb)"/><path d="M24 25c-.4 10-1.2 20-2.3 28" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5" fill="none"/><ellipse cx="30" cy="59" rx="17" ry="8" fill="url(#pp-sb)"/><ellipse cx="30" cy="56.6" rx="12.5" ry="4.4" fill="#fff" opacity=".28"/><ellipse cx="30" cy="15" rx="20" ry="12" fill="url(#pp-hb)"/><ellipse cx="22.5" cy="10.8" rx="7" ry="3.4" fill="#fff" opacity=".85" transform="rotate(-12 22.5 10.8)"/></symbol>
+    <symbol id="i-pp-g" viewBox="0 0 60 84"><ellipse cx="27" cy="77" rx="16" ry="4" fill="#000" opacity=".28"/><path d="M28.6 56l-.7 21h4.2l-.7-21z" fill="url(#pp-steel)"/><path d="M21 22c-.5 12-1.5 24-3.5 34 4 3.4 8.5 5 12.5 5s8.5-1.6 12.5-5c-2-10-3-22-3.5-34z" fill="url(#pp-bg)"/><path d="M24 25c-.4 10-1.2 20-2.3 28" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5" fill="none"/><ellipse cx="30" cy="59" rx="17" ry="8" fill="url(#pp-sg)"/><ellipse cx="30" cy="56.6" rx="12.5" ry="4.4" fill="#fff" opacity=".28"/><ellipse cx="30" cy="15" rx="20" ry="12" fill="url(#pp-hg)"/><ellipse cx="22.5" cy="10.8" rx="7" ry="3.4" fill="#fff" opacity=".85" transform="rotate(-12 22.5 10.8)"/></symbol>
+    <symbol id="i-pp-y" viewBox="0 0 60 84"><ellipse cx="27" cy="77" rx="16" ry="4" fill="#000" opacity=".28"/><path d="M28.6 56l-.7 21h4.2l-.7-21z" fill="url(#pp-steel)"/><path d="M21 22c-.5 12-1.5 24-3.5 34 4 3.4 8.5 5 12.5 5s8.5-1.6 12.5-5c-2-10-3-22-3.5-34z" fill="url(#pp-by)"/><path d="M24 25c-.4 10-1.2 20-2.3 28" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5" fill="none"/><ellipse cx="30" cy="59" rx="17" ry="8" fill="url(#pp-sy)"/><ellipse cx="30" cy="56.6" rx="12.5" ry="4.4" fill="#fff" opacity=".28"/><ellipse cx="30" cy="15" rx="20" ry="12" fill="url(#pp-hy)"/><ellipse cx="22.5" cy="10.8" rx="7" ry="3.4" fill="#fff" opacity=".85" transform="rotate(-12 22.5 10.8)"/></symbol>
+  </defs>
+</svg>
+<div class="wrap">
+
+  <div class="header">
+    <span class="nail"></span><span class="nail"></span>
+    <h1>KARTIK'S WALL<small>PINBOARD PORTFOLIO · VADODARA</small></h1>
+    <div class="meta"><span id="today">—</span><button class="btn" onclick="window.print()"><svg class="ic"><use href="#i-print"/></svg> PRINT</button><button class="btn" id="scatter"><svg class="ic"><use href="#i-shuffle"/></svg> SHUFFLE</button></div>
+  </div>
+
+  <div class="board" id="board">
+    <div class="string" style="grid-column:span 12;text-align:center"><span class="hint"><svg class="ic"><use href="#i-move"/></svg> DRAG ANY NOTE · RUMMAGE THE CASE FILES BELOW · NOTHING HERE IS A TEMPLATE</span></div>
+
+    <!-- ID -->
+    <div class="note hero s8 drag"><span class="tape"></span>
+      <h2><svg class="ic"><use href="#i-star"/></svg> HELLO, I AM PINNED HERE</h2>
+      <div class="idrow">
+        <div class="polaroid"><div class="ph"><img src="kartik-profile.jpg" alt="Kartik Bhalodiya"></div><small>kartik · '27</small></div>
+        <div style="flex:1;min-width:220px"><h3>Kartik Bhalodiya</h3>
+          <span class="roles">FULL STACK · MERN · PYTHON · AI APPS · FLUTTER</span>
+          <div class="contactline"><svg class="ic"><use href="#i-phone"/></svg> <a href="tel:+919664644590">+91 9664644590</a> · <svg class="ic"><use href="#i-mail"/></svg> <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kartikresumes@gmail.com" target="_blank" rel="noopener">kartikresumes@gmail.com</a><br><a href="https://www.linkedin.com/in/kartik-bhalodiya-aa486a329" target="_blank" rel="noopener"><svg class="logomark li"><use href="#i-logo-li"/></svg> LinkedIn: <b>Kartik Bhalodiya</b></a> · <a href="https://github.com/kartkbhalodiya" target="_blank" rel="noopener"><svg class="logomark gh"><use href="#i-logo-gh"/></svg> GitHub: <b>kartkbhalodiya</b></a> · <svg class="ic"><use href="#i-pin"/></svg> Vadodara</div>
+          <div class="stats"><span>78% productivity</span><span>89% engagement</span><span>49% faster builds</span><span>40% less admin</span></div>
+          <div style="margin-top:12px"><button class="btn" data-open-resume><svg class="ic"><use href="#i-print"/></svg> VIEW RESUME</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note summary s4 drag" style="background:#fffad1;transform:rotate(1.4deg)"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-y"/></svg></span>
+      <h2><svg class="ic"><use href="#i-pin"/></svg> SUMMARY</h2>
+      <p>Motivated Full Stack Developer skilled in <b>JavaScript, TypeScript, React, Node.js, Express.js, Django, MongoDB, PostgreSQL</b>. Builds <b>AI-powered web + mobile apps</b>. Knows RESTful APIs, GraphQL, JWT/OAuth, CI/CD, Docker, microservices, Agile/Scrum. At home in <b>Git, VS Code, AWS, Azure</b>. Ships scalable, user-friendly software — and keeps improving.</p>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2>SKILL · 01</h2><h4>LANGUAGES</h4><p>JavaScript, TypeScript, Python, SQL, HTML, CSS, Dart/Flutter</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-b"/></svg></span><h2>SKILL · 02</h2><h4>FRAMEWORKS</h4><p>React, Redux, Node.js, Express.js, Django, Bootstrap, Tailwind CSS, Material-UI, GraphQL</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-g"/></svg></span><h2>SKILL · 03</h2><h4>DATABASES</h4><p>MongoDB, PostgreSQL, SQLite3</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-y"/></svg></span><h2>SKILL · 04</h2><h4>CLOUD</h4><p>Docker, AWS, Azure</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2>SKILL · 05</h2><h4>TESTING</h4><p>Jest, Mocha, Unit Testing</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-b"/></svg></span><h2>SKILL · 06</h2><h4>AUTH &amp; APIs</h4><p>RESTful APIs, OAuth, JWT, Microservices</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-g"/></svg></span><h2>SKILL · 07</h2><h4>AI / ML</h4><p>Deep Learning, Neural Networks, TensorFlow, PyTorch, Scikit-learn, NLP</p></div>
+    <div class="note s3 drag skill"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-y"/></svg></span><h2>SKILL · 08</h2><h4>METHOD</h4><p>Agile, Scrum, Git, VS Code, Celery, CI/CD</p></div>
+
+    <!-- EXPERIENCE -->
+    <div class="note job s6 drag env"><span class="tape"></span><h2><svg class="ic"><use href="#i-brief"/></svg> JOB LETTER · CURRENT</h2><h3>Gomzi Consulting Services — Full Stack Engineer</h3><span class="date">AUG 2026 – PRESENT · SURAT</span>
+      <ul><li>Developed web applications using <b>MongoDB, Express.js, React.js, Node.js</b>.</li><li>Built <b>REST APIs, responsive UI, authentication, CRUD</b>.</li><li><b>Git/GitHub</b> version control + deployment.</li></ul>
+    </div>
+    <div class="note job s6 drag env"><span class="tape"></span><h2><svg class="ic"><use href="#i-brief"/></svg> JOB LETTER · 4 MONTHS</h2><h3>Amdox Technology — Web Developer Intern</h3><span class="date">JAN 2026 – APR 2026</span>
+      <ul><li><b>Python + Django REST Framework</b>; built &amp; consumed RESTful APIs.</li><li>Backend: <b>models, serializers, views, URL routing</b>.</li><li>Real-world structure + <b>version control</b> workflows.</li><li><b>Debugged + tested endpoints</b> for integrity &amp; accuracy.</li></ul>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="searchnote"><span class="sicon"><svg class="ic"><use href="#i-search"/></svg></span><input id="q" placeholder="Rummage the wall… try 'gemini', 'flutter', 'dropout' or 'live'"></div>
+    <div class="note proj big s6 drag" data-keys="altru vscode ai agent typescript openai claude gemini mistral 40 models router chat inline workspace 78 89 49 demo extension"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · A</h2><h3>Altru — VS Code AI Agent</h3><span class="stack">TYPESCRIPT · VS CODE API · LLM APIS</span>
+      <ul><li>Agent over <b>40+ models (OpenAI, Claude, Gemini, Mistral)</b> — productivity <b>~78%</b>.</li><li>Engagement <b>+89%</b>: suggestions, multi-turn chat, inline edits, workspace sense.</li><li>TypeScript <b>model-router (5+ providers)</b>; CI/CD → builds <b>49%</b> faster.</li><li><b>Live Demo: Altru-Code (VS Code Extension).</b></li><li><svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/Altru--Coder" target="_blank" rel="noopener">github.com/kartkbhalodiya/Altru--Coder</a></li></ul>
+    </div>
+    <div class="note proj big s6 drag" data-keys="academix college django postgres react timetable dropout oauth jwt roles dashboard chart graphql attendance grades 40 25 500 80 coverage report"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-b"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · B</h2><h3>Academix — AI College System</h3><span class="stack">DJANGO · POSTGRESQL · JS · REACT</span>
+      <ul><li>Admissions → faculty; admin workload <b>−40%</b>.</li><li>AI timetable + <b>dropout-risk prediction (+25%)</b>; OAuth + JWT, <b>3 roles</b>.</li><li>Postgres + Django ORM, <b>500+ records</b>; Jest/Mocha <b>80%+ coverage</b>.</li><li>Chart.js + GraphQL dashboards: reports <b>hours → &lt;10 sec</b>.</li><li><svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/AcademiX" target="_blank" rel="noopener">github.com/kartkbhalodiya/AcademiX</a></li></ul>
+    </div>
+    <div class="note proj big s6 drag" data-keys="janhelp smart city civic complaint django flutter gemini ai chatbot hindi gujarati marathi geo routing sla heatmap postgres live janhelps google solution challenge"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-g"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · C ★ LIVE</h2><h3>JanHelp — Smart City Complaint System</h3><span class="stack">DJANGO 5.2 · FLUTTER · GEMINI 2.5 FLASH · POSTGRESQL</span>
+      <ul><li>AI civic platform: citizens report potholes, leaks, outages — <b>Gemini photo-proof verification</b> + guided chatbot in <b>English, Hindi, Gujarati, Marathi</b>.</li><li><b>Geo-distance dept routing</b>, duplicate detection, SLA tracking, heatmap analytics, email/SMS/push alerts.</li><li>Flutter mobile app + web portal at <b>janhelps.in</b>; Google Solution Challenge 2026 (UN SDG 11).</li><li><svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/Smart-CITY" target="_blank" rel="noopener">github.com/kartkbhalodiya/Smart-CITY</a> · <svg class="ic"><use href="#i-globe"/></svg> <a href="https://janhelps.in" target="_blank" rel="noopener">janhelps.in</a></li></ul>
+    </div>
+    <div class="note proj big s6 drag" data-keys="flicko health flutter django gemini ai calls voice meal photo reports pdf android docker digitalocean supabase"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · D</h2><h3>Flicko AI — Health Companion App</h3><span class="stack">FLUTTER · DJANGO · GEMINI · SUPABASE · DOCKER</span>
+      <ul><li><b>Live AI health calls</b> with native Android foreground service, transcript memory, resumable workflows.</li><li><b>Gemini meal-photo intelligence</b>, AI coach dashboard, reminders, <b>PDF + HTML doctor reports</b> behind authenticated APIs.</li><li>Production deploy scaffolding: Docker + DigitalOcean, Supabase Postgres, Cloudinary storage.</li><li><svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/Flicko-Ai" target="_blank" rel="noopener">github.com/kartkbhalodiya/Flicko-Ai</a></li></ul>
+    </div>
+    <div class="note proj big s6 drag" data-keys="face scan attendance opencv python ai computer vision"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-y"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · E</h2><h3>Face Scan Attendance — OpenCV</h3><span class="stack">PYTHON · OPENCV · AI VISION</span>
+      <ul><li>Face-scan attendance system in <b>Python using OpenCV</b> — camera-based identity marking.</li><li><svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/Face_Scan_Attandance_OpenCV" target="_blank" rel="noopener">github.com/kartkbhalodiya/Face_Scan_Attandance_OpenCV</a></li></ul>
+    </div>
+    <div class="note proj big s6 drag" data-keys="ecommerce shop store vercel javascript live demo cart"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-b"/></svg></span><h2><svg class="ic"><use href="#i-folder"/></svg> CASE FILE · F ★ LIVE</h2><h3>E-Commerce Storefront</h3><span class="stack">JAVASCRIPT · LIVE ON VERCEL</span>
+      <ul><li>Deployed shopping build — browse it live, not just screenshots.</li><li><svg class="ic"><use href="#i-globe"/></svg> <a href="https://e-commerce-y1lv.vercel.app" target="_blank" rel="noopener">Live demo</a> · <svg class="ic"><use href="#i-link"/></svg> <a href="https://github.com/kartkbhalodiya/e---commerce-" target="_blank" rel="noopener">github.com/kartkbhalodiya/e---commerce-</a></li></ul>
+    </div>
+
+    <!-- SCHOOL -->
+    <div class="note school s4 drag"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-g"/></svg></span><h2><svg class="ic"><use href="#i-cap"/></svg> REPORT CARD</h2><h3>B.Tech — Parul University</h3><p>Vadodara · Expected 2027 · 2023 – Present</p></div>
+    <div class="note school s4 drag"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2><svg class="ic"><use href="#i-cap"/></svg> REPORT CARD</h2><h3>HSC — Modi Schools</h3><p>2022 – 2023</p></div>
+    <div class="note school s4 drag"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-b"/></svg></span><h2><svg class="ic"><use href="#i-cap"/></svg> REPORT CARD</h2><h3>SSC — Nalanda Vidhyalaya</h3><p>2020 – 2021</p></div>
+
+    <!-- CERTS -->
+    <div class="note s12 drag" style="background:var(--w);transform:rotate(-.4deg)"><span class="tape"></span><h2><svg class="ic"><use href="#i-medal"/></svg> RIBBONS PINNED</h2><h3>Certifications</h3>
+      <div class="sealrow"><span class="ribbon"><svg class="ic"><use href="#i-star"/></svg> 2026 · Pregrade Advanced AIML — AI &amp; ML</span><span class="ribbon"><svg class="ic"><use href="#i-star"/></svg> 2025 · HackSchool — Ethical Hacking &amp; Cybersecurity</span><span class="ribbon"><svg class="ic"><use href="#i-star"/></svg> 2026 · Deep Learning — CNNs, RNNs, NLP</span></div>
+    </div>
+
+    <!-- LANG + CONTACT -->
+    <div class="note langs s6 drag"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-y"/></svg></span><h2><svg class="ic"><use href="#i-chat"/></svg> HEARD ON THE WALL</h2><h3>Languages</h3><div class="bubbles"><span>Hindi — Native</span><span>English — Professional</span><span>Gujarati — Native</span></div></div>
+    <div class="note contact s6 drag"><span class="pin3d"><svg class="pushpin" viewBox="0 0 60 84"><use href="#i-pp-r"/></svg></span><h2><svg class="ic"><use href="#i-phone"/></svg> TAKE MY CARD</h2><h3>Hire Kartik →</h3><p>Reply fast. Seriously.</p>
+      <div><a class="big" style="background:var(--red);color:#fff" href="https://mail.google.com/mail/?view=cm&fs=1&to=kartikresumes@gmail.com" target="_blank" rel="noopener"><svg class="ic"><use href="#i-mail"/></svg> EMAIL ME</a><a class="big" href="tel:+919664644590"><svg class="ic"><use href="#i-phone"/></svg> +91 9664644590</a><button class="big" data-open-resume><svg class="ic"><use href="#i-print"/></svg> VIEW RESUME</button></div>
+    </div>
+  </div>
+  <div class="foot">© 2026 KARTIK BHALODIYA · PINNED IN VADODARA · PLEASE DO NOT REMOVE PINS</div>
+</div>
+
+<div id="resumeOverlay" aria-hidden="true">
+  <div class="resume-backdrop" data-close-resume></div>
+  <div class="resume-sheet" role="dialog" aria-label="Resume preview">
+    <div class="resume-tape"></div>
+    <div class="resume-head"><span>SEALED FILE · KARTIK BHALODIYA · RESUME</span>
+      <span class="rtools"><a class="rbtn hot" href="Kartik-Bhalodiya-Resume.pdf" download><svg class="ic"><use href="#i-print"/></svg> DOWNLOAD PDF</a><a class="rbtn" href="Kartik-Bhalodiya-Resume.pdf" target="_blank" rel="noopener">OPEN IN NEW TAB</a><button class="rbtn" data-close-resume>CLOSE</button></span>
+    </div>
+    <div class="resume-fallback">The seal breaks, the map opens — full resume below, readable right here. HR can also use <b>DOWNLOAD PDF</b>.</div>
+    <div class="resume-body">
+    <div class="resume-paper">
+      <h4>KARTIK BHALODIYA</h4>
+      <p class="rp-sub">Full Stack | MERN | Python | AI-Powered Apps | Flutter<br>+91 9664644590 | kartikresumes@gmail.com | <a href="https://www.linkedin.com/in/kartik-bhalodiya-aa486a329" target="_blank" rel="noopener">LinkedIn: Kartik Bhalodiya</a> | <a href="https://github.com/kartkbhalodiya" target="_blank" rel="noopener">GitHub: kartkbhalodiya</a> | Vadodara</p>
+      <h5>PROFESSIONAL SUMMARY</h5>
+      <p>Motivated Full Stack Developer skilled in JavaScript, TypeScript, React, Node.js, Express.js, Django, MongoDB, and PostgreSQL. Experienced building AI-powered web and mobile applications. Familiar with RESTful APIs, GraphQL, JWT/OAuth authentication, CI/CD pipelines, Docker, microservices architecture, and Agile/Scrum workflows. Proficient with Git, VS Code, and cloud platforms (AWS, Azure). Committed to continuous improvement and delivering scalable, user-friendly software.</p>
+      <h5>TECHNICAL SKILLS</h5>
+      <p><b>Languages</b> JavaScript, TypeScript, Python, SQL, HTML, CSS, Dart/Flutter<br><b>Frameworks</b> React, Redux, Node.js, Express.js, Django, Bootstrap, Tailwind CSS, Material-UI, GraphQL<br><b>Databases</b> MongoDB, PostgreSQL, SQLite3<br><b>Cloud</b> Docker, AWS, Azure<br><b>Testing</b> Jest, Mocha, Unit Testing<br><b>Auth &amp; APIs</b> RESTful APIs, OAuth, JWT, Microservices<br><b>AI/ML</b> Deep Learning, Neural Networks, TensorFlow, PyTorch, Scikit-learn, NLP<br><b>Methodology</b> Agile, Scrum, Git, VS Code, Celery, CI/CD</p>
+      <h5>EXPERIENCE</h5>
+      <p><b>Gomzi Consulting Services - Full Stack Engineer</b><br><span>Aug 2026 – Present | Surat</span></p>
+      <ul><li>Developed web applications using MongoDB, Express.js, React.js, and Node.js.</li><li>Built REST APIs, responsive UI, authentication, and CRUD functionality.</li><li>Used Git/GitHub for version control and deployment.</li></ul>
+      <p><b>Amdox Technology — Web Developer Intern</b><br><span>Jan 2026 – Apr 2026 | 4 Months</span></p>
+      <ul><li>Learned Python and Django REST Framework; built and consumed RESTful APIs.</li><li>Worked on backend tasks: models, serializers, views, and URL routing in Django.</li><li>Gained hands-on exposure to real-world project structure and version control workflows.</li><li>Assisted in debugging and testing API endpoints, ensuring data integrity and response accuracy.</li></ul>
+      <h5>PROJECTS</h5>
+      <p><b>Altru — VS Code AI Agent</b> <span>TypeScript | VS Code Extension API | LLM APIs</span></p>
+      <ul><li>Engineered a VS Code extension AI agent supporting 40+ AI models (OpenAI, Claude, Gemini, Mistral) via a unified interface, boosting developer productivity by ~78% in testing.</li><li>Increased user engagement by 89% through AI-powered context-aware code suggestions, multi-turn chat, inline edits, and workspace-level understanding.</li><li>Built an extensible model-router in TypeScript switching across 5+ providers dynamically; integrated CI/CD pipeline reducing build time by 49%.</li><li>Live Demo: Altru-Code (VS Code Extension)</li></ul>
+      <p><b>Academix — AI-Powered College Management System</b> <span>Django | PostgreSQL | JavaScript | React</span></p>
+      <ul><li>Developed a full-featured college management platform covering admissions, scheduling, attendance, grades, and faculty management, reducing administrative workload by 40%.</li><li>Integrated AI module for smart timetable generation and dropout-risk prediction, improving early intervention accuracy by 25%; applied OAuth and JWT for role-based access across 3 user roles.</li><li>Designed a normalized PostgreSQL schema with Django ORM supporting 500+ concurrent records; wrote unit tests (Jest/Mocha) achieving 80%+ code coverage.</li><li>Built real-time dashboards with Chart.js and GraphQL queries, reducing report generation time from hours to under 10 seconds.</li></ul>
+      <h5>EDUCATION</h5>
+      <p><b>B.Tech</b> — Parul University, Vadodara | Expected Graduation: 2027 &nbsp; Enrolled 2023 – Present<br><b>HSC</b> — Modi Schools &nbsp; 2022 – 2023<br><b>SSC</b> — Nalanda Vidhyalaya &nbsp; 2020 – 2021</p>
+      <h5>CERTIFICATIONS</h5>
+      <p><b>Pregrade Advanced AIML Certificate</b> — Artificial Intelligence &amp; Machine Learning &nbsp; 2026<br><b>HackSchool</b> — Ethical Hacking &amp; Cybersecurity Bootcamp &nbsp; 2025<br><b>Deep Learning Specialization</b> — Neural Networks, CNNs, RNNs &amp; NLP &nbsp; 2026</p>
+      <h5>LANGUAGES</h5>
+      <p>Hindi (Native) • English (Professional) • Gujarati (Native)</p>
+    </div>
+    <div class="door door-top"></div>
+    <div class="door door-bottom"></div>
+    <div class="seal">KB<small>SEALED</small></div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+document.getElementById('today').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+// resume unfold overlay
+function closeResume(){var o=document.getElementById('resumeOverlay');o.classList.remove('open');o.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+document.querySelectorAll('[data-open-resume]').forEach(function(b){b.addEventListener('click',function(){var o=document.getElementById('resumeOverlay');o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';});});
+document.querySelectorAll('[data-close-resume]').forEach(function(b){b.addEventListener('click',closeResume);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeResume();});
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1700)}
+// drag notes (pointer, transform offsets)
+document.querySelectorAll('.drag').forEach(function(el){
+  var sx=0,sy=0,dx=0,dy=0,drag=false;
+  el.addEventListener('pointerdown',function(e){var t=e.target;if(t.closest&&t.closest('a,button,input,textarea,select'))return;drag=true;sx=e.clientX-dx;sy=e.clientY-dy;el.classList.add('dragging');try{el.setPointerCapture(e.pointerId);}catch(_){}});
+  el.addEventListener('pointermove',function(e){if(!drag)return;dx=e.clientX-sx;dy=e.clientY-sy;el.style.translate=dx+'px '+dy+'px';});
+  ['pointerup','pointercancel'].forEach(function(ev){el.addEventListener(ev,function(){drag=false;el.classList.remove('dragging');});});
+});
+// shuffle tilts
+document.getElementById('scatter').onclick=function(){
+  document.querySelectorAll('.note').forEach(function(n){n.style.transform='rotate('+((Math.random()*4)-2).toFixed(1)+'deg)';});
+  toast('WALL SHUFFLED — STILL PINNED');
+};
+// project rummage
+document.getElementById('q').addEventListener('input',function(e){
+  var v=e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.proj').forEach(function(p){var k=((p.getAttribute('data-keys')||'')+' '+p.textContent).toLowerCase();p.style.display=(!v||k.indexOf(v)>-1)?'':'none';});
+});
+</script>
+</body>
+</html>
